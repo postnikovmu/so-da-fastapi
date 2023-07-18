@@ -1,5 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+
+class Query(BaseModel):
+    parameter1: str | None = None
+    parameter2: str | None = None
+    parameter3: str | None = None
+
 
 app = FastAPI()
 
@@ -23,6 +31,7 @@ def root():
     return {"message": "Hello World"}
 
 
-@app.get("/so-da/")
-def so_da():
+@app.post("/so-da/")
+def so_da(query: Query):
+    print(query)
     return {"message": "Hello from soda"}
