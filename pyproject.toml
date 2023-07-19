@@ -11,6 +11,7 @@ packages = [{include = "so_da_fastapi"}]
 python = "^3.10"
 fastapi = "^0.100.0"
 uvicorn = "^0.23.1"
+pandas = "^2.0.3"
 
 
 [build-system]

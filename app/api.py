@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import pandas as pd
 
 
 class Query(BaseModel):
-    parameter1: str | None = None
-    parameter2: str | None = None
+    country: str | None = None
+    languageHaveWorkedWith: str | None = None
     parameter3: str | None = None
 
 
@@ -33,5 +34,14 @@ def root():
 
 @app.post("/so-da/")
 def so_da(query: Query):
+    print("start")
+    df = pd.read_csv('./data/survey_results_public.csv')
+
+    if query.country:
+        df = df[(df['Country'] == query.country)]
+
     print(query)
-    return {"message": "Hello from soda"}
+    result = len(df)
+    print(result)
+    print("finish")
+    return {"Number of developers": result}
