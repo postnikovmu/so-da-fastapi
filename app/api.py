@@ -7,6 +7,7 @@ import pandas as pd
 class Query(BaseModel):
     country: str | None = None
     languageHaveWorkedWith: str | None = None
+    webframeHaveWorkedWith: str | None = None
     parameter3: str | None = None
 
 
@@ -48,7 +49,6 @@ def country():
 
 @app.get("/languagehaveworkedwith/")
 def languagehaveworkedwith():
-    print('start')
     languages = df.LanguageHaveWorkedWith.unique().tolist()
     languages_str = set()
     for language in languages:
@@ -60,8 +60,25 @@ def languagehaveworkedwith():
                 languages_str.add(one_person_language)
     languages_str_list = list(languages_str)
     languages_str_list.sort()
-    print(languages_str_list)
     return {"languagehaveworkedwith": languages_str_list}
+
+
+@app.get("/webframehaveworkedwith/")
+def webframehaveworkedwith():
+    print('start')
+    web_frames = df.WebframeHaveWorkedWith.unique().tolist()
+    web_frames_str = set()
+    for web_frame in web_frames:
+        if type(web_frame) != str:
+            continue
+        one_person_web_frames = web_frame.split(';')
+        for one_person_web_frame in one_person_web_frames:
+            if type(one_person_web_frame) == str:
+                web_frames_str.add(one_person_web_frame)
+    web_frames_str_list = list(web_frames_str)
+    web_frames_str_list.sort()
+    print(web_frames_str_list)
+    return {"webframehaveworkedwith": web_frames_str_list}
 
 
 @app.post("/so-da/")
@@ -74,7 +91,9 @@ def so_da(query: Query):
     if query.languageHaveWorkedWith:
         res_df = res_df.dropna(subset=['LanguageHaveWorkedWith'])
         res_df = res_df[(res_df['LanguageHaveWorkedWith'].str.contains(query.languageHaveWorkedWith))]
-
+    if query.webframeHaveWorkedWith:
+        res_df = res_df.dropna(subset=['WebframeHaveWorkedWith'])
+        res_df = res_df[(res_df['WebframeHaveWorkedWith'].str.contains(query.webframeHaveWorkedWith))]
     print(query)
     result = len(res_df)
     print(result)
